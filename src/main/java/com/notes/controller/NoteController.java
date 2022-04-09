@@ -1,8 +1,11 @@
 package com.notes.controller;
 
 import com.notes.entity.Note;
+import com.notes.model.dto.ErrorSchemaDTO;
+import com.notes.model.dto.ResponseDTO;
 import com.notes.service.NoteService;
-import com.notes.util.ResponseEntityHandler;
+import com.notes.util.Constant;
+import com.notes.util.ResponseHandler;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/notes")
@@ -26,56 +28,76 @@ public class NoteController {
         SINGULAR
     */
     @GetMapping("/{id}")
-    public ResponseEntity<Object> getNote(@PathVariable UUID id) {
+    public ResponseEntity<ResponseDTO> getNote(@PathVariable UUID id) {
         logger.info(this.getClass().getName() + " - getNote: " + id.toString());
         Note note = this.noteService.findById(id);
-        return ResponseEntityHandler.generateResponse(HttpStatus.OK, "Successfully retrieved data!", note);
+        return ResponseHandler.generateResponse(HttpStatus.OK,
+                new ErrorSchemaDTO(Constant.ErrorCode.SUCCESS, "Successfully retrieved data!"),
+                note);
     }
 
     @PostMapping("/")
-    public ResponseEntity<Object> createNote(@RequestBody Note paramNote) {
+    public ResponseEntity<ResponseDTO> createNote(@RequestBody Note paramNote) {
         logger.info(this.getClass().getName() + " - createNote : " + paramNote.toString());
         Note createdNote = this.noteService.createNote(paramNote);
-        return ResponseEntityHandler.generateResponse(HttpStatus.OK, "Successfully added data!", createdNote);
+        return ResponseHandler.generateResponse(HttpStatus.OK,
+                new ErrorSchemaDTO(Constant.ErrorCode.SUCCESS, "Successfully added data!"),
+                createdNote);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Object> updateNote(@PathVariable UUID id, @RequestBody Note paramNote) {
+    public ResponseEntity<ResponseDTO> updateNote(@PathVariable UUID id, @RequestBody Note paramNote) {
         logger.info(this.getClass().getName() + " - updateNote : " + paramNote.toString());
         if(!id.equals(paramNote.getId())) {
-            return ResponseEntityHandler.generateResponse(HttpStatus.BAD_REQUEST, "Note id in URL and Note id in request body is not match!", null);
+            String errorMessage = "Note id in URL and Note id in request body is not match!";
+            logger.error(this.getClass().getName() + "- ERROR - updateNote : " + errorMessage);
+            return ResponseHandler.generateResponse(HttpStatus.BAD_REQUEST,
+                    new ErrorSchemaDTO(Constant.ErrorCode.ERROR_BAD_REQUEST, errorMessage),
+                    null);
         }
         Note updatedNote = this.noteService.updateNote(paramNote);
 
         if(updatedNote == null) {
-            return ResponseEntityHandler.generateResponse(HttpStatus.BAD_REQUEST, "Note id is not exist!", updatedNote);
+            String errorMessage = "Note id is not exist!";
+            logger.error(this.getClass().getName() + "- ERROR - updateNote : " + errorMessage);
+            return ResponseHandler.generateResponse(HttpStatus.BAD_REQUEST,
+                    new ErrorSchemaDTO(Constant.ErrorCode.ERROR_BAD_REQUEST, errorMessage),
+                    null);
         } else {
-            return ResponseEntityHandler.generateResponse(HttpStatus.OK, "Successfully updated data!", updatedNote);
+            return ResponseHandler.generateResponse(HttpStatus.OK,
+                    new ErrorSchemaDTO(Constant.ErrorCode.SUCCESS, "Successfully updated data!"),
+                    updatedNote);
         }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteNote(@RequestBody UUID id) {
+    public ResponseEntity<ResponseDTO> deleteNote(@PathVariable UUID id) {
         logger.info(this.getClass().getName() + " - deleteNote : " + id);
         this.noteService.deleteNoteById(id);
-        return ResponseEntityHandler.generateResponse(HttpStatus.OK, "Successfully deleted data!", id);
+        return ResponseHandler.generateResponse(HttpStatus.OK,
+                new ErrorSchemaDTO(Constant.ErrorCode.SUCCESS, "Successfully deleted data!"),
+                id);
     }
 
     /*
         MULTIPLE
     */
     @GetMapping("/")
-    public ResponseEntity<Object> getAllNotes() {
+    public ResponseEntity<ResponseDTO> getAllNotes() {
         logger.info(this.getClass().getName() + " - getAllNotes");
         List<Note> notes = this.noteService.findAll();
-        return ResponseEntityHandler.generateResponse(HttpStatus.OK, "Successfully retrieved data!", notes);
+        return ResponseHandler.generateResponse(HttpStatus.OK,
+                new ErrorSchemaDTO(Constant.ErrorCode.SUCCESS, "Successfully retrieved data!"),
+                notes);
     }
 
     @DeleteMapping("/")
-    public ResponseEntity<Object> deleteNotes(@RequestBody List<UUID> uuids) {
+    public ResponseEntity<ResponseDTO> deleteNotes(@RequestBody List<UUID> uuids) {
         logger.info(this.getClass().getName() + " - deleteNotes : " + uuids.toString());
         this.noteService.deleteNotesByIds(uuids);
-        return ResponseEntityHandler.generateResponse(HttpStatus.OK, "Successfully deleted data!", uuids);
+        return ResponseHandler.generateResponse(HttpStatus.OK,
+                new ErrorSchemaDTO(Constant.ErrorCode.SUCCESS, "Successfully deleted data!"),
+                uuids);
     }
 
 }
