@@ -36,7 +36,7 @@ public class NoteController {
                 note);
     }
 
-    @PostMapping("/")
+    @PostMapping("")
     public ResponseEntity<ResponseDTO> createNote(@RequestBody Note paramNote) {
         logger.info(this.getClass().getName() + " - createNote : " + paramNote.toString());
         Note createdNote = this.noteService.createNote(paramNote);
@@ -82,7 +82,7 @@ public class NoteController {
     /*
         MULTIPLE
     */
-    @GetMapping("/")
+    @GetMapping("")
     public ResponseEntity<ResponseDTO> getAllNotes() {
         logger.info(this.getClass().getName() + " - getAllNotes");
         List<Note> notes = this.noteService.findAll();
@@ -91,7 +91,7 @@ public class NoteController {
                 notes);
     }
 
-    @DeleteMapping("/")
+    @DeleteMapping("")
     public ResponseEntity<ResponseDTO> deleteNotes(@RequestBody List<UUID> uuids) {
         logger.info(this.getClass().getName() + " - deleteNotes : " + uuids.toString());
         this.noteService.deleteNotesByIds(uuids);
