@@ -54,7 +54,7 @@ public class NoteController {
     @GetMapping("/user/{username}")
     public ResponseEntity<ResponseDTO> getNotesByUsername(@PathVariable String username) {
         logger.info(this.getClass().getName() + " - getNotesByUsername: " + username);
-        User user = this.userService.getUserByUsername(username);
+        User user = this.userService.findUserByUsername(username);
         List<Note> notes = this.noteService.findByUserId(user.getId());
         return ResponseHandler.generateResponse(HttpStatus.OK,
                 new ErrorSchemaDTO(Constant.ErrorCode.SUCCESS, "Successfully retrieved data!"),

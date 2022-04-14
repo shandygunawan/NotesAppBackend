@@ -37,6 +37,10 @@ public class User {
     @NonNull
     private String password;
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
+    private UserProfile userProfile;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     @NonNull
     @CreationTimestamp

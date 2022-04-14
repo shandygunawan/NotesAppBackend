@@ -44,7 +44,7 @@ public class NoteService {
     */
     @Transactional
     public Note createNote(RequestNoteCreate requestNoteCreate) {
-        User user = userRepository.findByUsername(this.getCurrentLoggedInUsername());
+        User user = this.userRepository.findByUsername(this.getCurrentLoggedInUsername());
 
         Note newNote = new Note();
         newNote.setTitle(requestNoteCreate.getTitle());
