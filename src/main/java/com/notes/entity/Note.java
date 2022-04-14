@@ -1,5 +1,6 @@
 package com.notes.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,24 +24,29 @@ public class Note {
     // fields
     @Id
     @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name="UUID", strategy="org.hibernate.id.UUIDGenerator")
-    @Column(name="id", updatable = false, nullable = false)
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
 
-    @Column(name="title", nullable = false)
+    @Column(name = "title", nullable = false)
     @NonNull
     private String title;
 
-    @Column(name="content", nullable = false)
+    @Column(name = "content", nullable = false)
     @NonNull
     private String content; // Store the raw string. The content will be rendered as markdown in frontend
 
-    @Column(name="created_at", nullable = false, updatable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnore
+    private User user;
+
+    @Column(name = "created_at", nullable = false, updatable = false)
     @NonNull
     @CreationTimestamp
     private Timestamp CreatedAt;
 
-    @Column(name="updated_at", nullable = false)
+    @Column(name = "updated_at", nullable = false)
     @NonNull
     @UpdateTimestamp
     private Timestamp updatedAt;

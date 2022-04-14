@@ -9,4 +9,6 @@ import java.util.UUID;
 public interface NoteRepository extends JpaRepository<Note, UUID> {
 
     public void deleteByIdIn(List<UUID> uuids);
+
+    public List<Note> findByUserId(UUID uuid);
 }
