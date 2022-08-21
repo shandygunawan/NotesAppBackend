@@ -14,7 +14,8 @@ spring:
     username: postgres
     password: postgres
 logging:
-  path: C:/Users/shand/Projects/IdeaProjects/notes/output/log/
+  file:
+    path: C:/Users/shand/Projects/IdeaProjects/notes/output/log/
 jwt:
   secret: NoteAppByShandy21091998
   issuer: Shandy
