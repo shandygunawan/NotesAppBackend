@@ -1,0 +1,20 @@
+spring:
+  profiles:
+    active: local
+
+### LOCAL
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+  datasource:
+    driver: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/notes
+    username: postgres
+    password: postgres
+logging:
+  path: C:/Users/shand/Projects/IdeaProjects/notes/output/log/
+jwt:
+  secret: NoteAppByShandy21091998
+  issuer: Shandy

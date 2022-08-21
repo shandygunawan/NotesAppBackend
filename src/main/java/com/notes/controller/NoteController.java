@@ -12,7 +12,7 @@ import com.notes.service.NoteService;
 import com.notes.service.UserService;
 import com.notes.util.Constant;
 import com.notes.util.ResponseHandler;
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,9 +23,8 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/notes")
+@Slf4j
 public class NoteController {
-
-    final static Logger logger = Logger.getLogger(NoteController.class);
 
     @Autowired
     private NoteService noteService;
@@ -35,7 +34,7 @@ public class NoteController {
 
     @GetMapping("")
     public ResponseEntity<ResponseDTO> getAllNotes() {
-        logger.info(this.getClass().getName() + " - getAllNotes");
+        log.info(this.getClass().getName() + " - getAllNotes");
         List<Note> notes = this.noteService.findAll();
         return ResponseHandler.generateResponse(HttpStatus.OK,
                 new ErrorSchemaDTO(Constant.ErrorCode.SUCCESS, "Successfully retrieved data!"),
@@ -44,7 +43,7 @@ public class NoteController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ResponseDTO> getNoteById(@PathVariable UUID id) {
-        logger.info(this.getClass().getName() + " - getNoteById: " + id.toString());
+        log.info(this.getClass().getName() + " - getNoteById: " + id.toString());
         Note note = this.noteService.findById(id);
         return ResponseHandler.generateResponse(HttpStatus.OK,
                 new ErrorSchemaDTO(Constant.ErrorCode.SUCCESS, "Successfully retrieved data!"),
@@ -53,7 +52,7 @@ public class NoteController {
 
     @GetMapping("/user/{username}")
     public ResponseEntity<ResponseDTO> getNotesByUsername(@PathVariable String username) {
-        logger.info(this.getClass().getName() + " - getNotesByUsername: " + username);
+        log.info(this.getClass().getName() + " - getNotesByUsername: " + username);
         User user = this.userService.findUserByUsername(username);
         List<Note> notes = this.noteService.findByUserId(user.getId());
         return ResponseHandler.generateResponse(HttpStatus.OK,
@@ -63,7 +62,7 @@ public class NoteController {
 
     @PostMapping("")
     public ResponseEntity<ResponseDTO> createNote(@RequestBody RequestNoteCreate requestNoteCreate) {
-        logger.info(this.getClass().getName() + " - createNote : " + requestNoteCreate.toString());
+        log.info(this.getClass().getName() + " - createNote : " + requestNoteCreate.toString());
         Note createdNote = this.noteService.createNote(requestNoteCreate);
         return ResponseHandler.generateResponse(HttpStatus.OK,
                 new ErrorSchemaDTO(Constant.ErrorCode.SUCCESS, "Successfully added data!"),
@@ -72,13 +71,13 @@ public class NoteController {
 
     @PutMapping("")
     public ResponseEntity<ResponseDTO> updateNote(@RequestBody RequestNoteUpdate requestNoteUpdate) {
-        logger.info(this.getClass().getName() + " - updateNote : " + requestNoteUpdate.toString());
+        log.info(this.getClass().getName() + " - updateNote : " + requestNoteUpdate.toString());
 
         Note updatedNote = this.noteService.updateNote(requestNoteUpdate);
 
         if(updatedNote == null) {
             String errorMessage = "Note id is not exist!";
-            logger.error(this.getClass().getName() + "- ERROR - updateNote : " + errorMessage);
+            log.error(this.getClass().getName() + "- ERROR - updateNote : " + errorMessage);
             return ResponseHandler.generateResponse(HttpStatus.BAD_REQUEST,
                     new ErrorSchemaDTO(Constant.ErrorCode.ERROR_BAD_REQUEST, errorMessage),
                     null);
@@ -91,7 +90,7 @@ public class NoteController {
 
     @DeleteMapping("")
     public ResponseEntity<ResponseDTO> deleteNotes(@RequestBody RequestNoteDeleteMultiple requestNoteDeleteMultiple) {
-        logger.info(this.getClass().getName() + " - deleteNotes : " + requestNoteDeleteMultiple.toString());
+        log.info(this.getClass().getName() + " - deleteNotes : " + requestNoteDeleteMultiple.toString());
         this.noteService.deleteNotesByIds(requestNoteDeleteMultiple.getIds());
         return ResponseHandler.generateResponse(HttpStatus.OK,
                 new ErrorSchemaDTO(Constant.ErrorCode.SUCCESS, "Successfully deleted data!"),
